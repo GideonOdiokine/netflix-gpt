@@ -15,12 +15,21 @@ const Login = () => {
   const password = useRef();
 
   const handleSubmit = () => {
-    // Validate the form data;
+    // Validate form input
     const validationErrors = checkValidData(
       email.current.value,
-      password.current.value
+      password.current.value,
+      !isSignInForm ? name.current.value : undefined // Pass name only for
     );
-    setErrors(validationErrors);
+    console.log(validationErrors);
+
+    if (Object.keys(validationErrors).length === 0) {
+
+        console.log("API is ready")
+      setErrors({});
+    } else {
+      setErrors(validationErrors);
+    }
   };
 
   const toggleSignInForm = () => {
@@ -53,6 +62,8 @@ const Login = () => {
             className="p-4 my-4 w-full bg-gray-700"
           />
         )}
+        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+
         <input
           ref={email}
           type="text"
