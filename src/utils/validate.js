@@ -6,7 +6,6 @@ export const checkValidData = (email, password, name) => {
   //   const isPasswordValid = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/.test(
   //     password
   //   );
-
   if (!email) {
     errors.email = "Email is required";
   } else if (!isEmailValid) {
