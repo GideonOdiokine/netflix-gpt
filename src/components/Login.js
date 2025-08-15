@@ -12,7 +12,7 @@ const Login = () => {
 
   const name = useRef(null);
   const email = useRef(null);
-  const password = useRef();
+  const password = useRef(null);
 
   const handleSubmit = () => {
     // Validate form input
