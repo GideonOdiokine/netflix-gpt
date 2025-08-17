@@ -1,7 +1,14 @@
-import Body from './components/Body';
+import Body from "./components/Body";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-  return <Body />;
+  return (
+    <>
+      <ToastContainer />
+      <Body />
+    </>
+  );
 }
 
 export default App;

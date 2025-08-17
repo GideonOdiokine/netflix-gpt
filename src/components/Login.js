@@ -2,13 +2,16 @@ import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { BG_URL } from "../utils/constants";
 import { checkValidData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
-  const [errors, setErrors] = useState({
-    email: "",
-    password: "",
-  });
+  const [errors, setErrors] = useState({});
 
   const name = useRef(null);
   const email = useRef(null);
@@ -21,12 +24,49 @@ const Login = () => {
       password.current.value,
       !isSignInForm ? name.current.value : undefined // Pass name only for
     );
-    console.log(validationErrors);
+    // console.log(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-
-        console.log("API is ready")
       setErrors({});
+
+      if (!isSignInForm) {
+        // Signup logic
+        createUserWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        )
+          .then((userCredential) => {
+            // Signed up
+            const user = userCredential.user;
+            console.log(user);
+            toast.success("You have successfully registered!");
+
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            toast.error(errorCode + "-" + errorMessage);
+            setErrors(errorCode + "-" + errorMessage);
+            // ..
+          });
+      } else {
+        signInWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        )
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrors(errorCode + "-" + errorMessage);
+          });
+      }
     } else {
       setErrors(validationErrors);
     }
