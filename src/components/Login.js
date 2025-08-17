@@ -39,7 +39,6 @@ const Login = () => {
           .then((userCredential) => {
             // Signed up
             const user = userCredential.user;
-            console.log(user);
             toast.success("You have successfully registered!");
 
             // ...
@@ -60,11 +59,13 @@ const Login = () => {
           .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
+            console.log(user);
           })
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             setErrors(errorCode + "-" + errorMessage);
+            toast.error(errorCode + "-" + errorMessage);
           });
       }
     } else {
