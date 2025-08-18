@@ -1,13 +1,16 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
-import { BG_URL } from "../utils/constants";
+import { BG_URL, USER_AVATAR } from "../utils/constants";
 import { checkValidData } from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { toast } from "react-toastify";
+import { addUser } from "../reduxSlice/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -16,7 +19,7 @@ const Login = () => {
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
-
+  const dispatch = useDispatch();
 
   const handleSubmit = () => {
     // Validate form input
@@ -38,11 +41,22 @@ const Login = () => {
           password.current.value
         )
           .then((userCredential) => {
-            // Signed up
             const user = userCredential.user;
-            toast.success("You have successfully registered!");
-
-            // ...
+            updateProfile(user, {
+              displayName: name.current.value,
+              photoURL: USER_AVATAR,
+            }).then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+            });
+            toast.success("Registration successful!");
           })
           .catch((error) => {
             const errorCode = error.code;
@@ -60,7 +74,7 @@ const Login = () => {
           .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
-            console.log(user);
+            toast.success("Welcome back!");
           })
           .catch((error) => {
             const errorCode = error.code;
